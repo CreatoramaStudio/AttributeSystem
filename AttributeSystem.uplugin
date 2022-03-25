@@ -1,0 +1,24 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.0",
+	"FriendlyName": "AttributeSystem",
+	"Description": "Unreal Engine plugin for adding Attributes",
+	"Category": "Other",
+	"CreatedBy": "Creatorama Studio",
+	"CreatedByURL": "https://github.com/CreatoramaStudio/AttributeSystem",
+	"DocsURL": "https://github.com/CreatoramaStudio/AttributeSystem/wiki",
+	"MarketplaceURL": "",
+	"SupportURL": "https://github.com/CreatoramaStudio/AttributeSystem/issues",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "AttributeSystem",
+			"Type": "Runtime",
+			"LoadingPhase": "Default"
+		}
+	]
+}
