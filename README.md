@@ -1,2 +1,2 @@
 # AttributeSystem
-Unreal Engine plugin for adding attributes
+Unreal Engine plugin for adding attributes without GAS
