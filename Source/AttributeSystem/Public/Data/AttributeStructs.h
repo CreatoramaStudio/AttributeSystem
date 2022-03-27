@@ -28,21 +28,17 @@ public:
         float Multiplier = 1;
 
     UPROPERTY(SaveGame, EditAnywhere)
-        EFloatLimitType LimtType = EFloatLimitType::None;
+        EFloatLimitType LimitType = EFloatLimitType::None;
 
-    UPROPERTY(SaveGame, EditAnywhere, meta = (EditCondition = "LimtType==EFloatLimitType::Min", EditConditionHides))
-        float MinLimitValue;
-
-    UPROPERTY(SaveGame, EditAnywhere, meta = (EditCondition = "LimtType==EFloatLimitType::Max", EditConditionHides))
-        float MaxLimitValue;
-
-    UPROPERTY(SaveGame, EditAnywhere, meta = (EditCondition = "LimtType==EFloatLimitType::MinMax", EditConditionHides))
-        FFloatInterval MinMaxLimitValues = FFloatInterval(0, 0);
+    UPROPERTY(SaveGame, EditAnywhere, meta = (EditCondition = "LimitType!=EFloatLimitType::None", EditConditionHides))
+        FFloatInterval LimitValues = FFloatInterval(0, 0);
 
     UPROPERTY()
     FOnUpdateAttibuteMulticast OnUpdateAttibute;
 
 protected:  
+
+    
 
 private:
 
@@ -52,28 +48,32 @@ public:
     {
         float Value = (BaseValue + Delta) * Multiplier;
 
-        switch (LimtType)
+        switch (LimitType)
         {
         case EFloatLimitType::None:
             return Value;
             break;
 
         case EFloatLimitType::Min:
-            return FMath::Max(Value, MinLimitValue);
+            return FMath::Max(Value, LimitValues.Min);
             break;
 
         case EFloatLimitType::Max:
-            return FMath::Min(Value, MaxLimitValue);
+            return FMath::Min(Value, LimitValues.Max);
             break;
 
         case EFloatLimitType::MinMax:
-            return FMath::Clamp(Value, MinMaxLimitValues.Min, MinMaxLimitValues.Max);
+            return FMath::Clamp(Value, LimitValues.Min, LimitValues.Max);
             break;
         }
 
         return Value;
     }
 
+    bool HasLimit() const
+    {
+        return LimitType != EFloatLimitType::None;
+    }
 
 
 protected:

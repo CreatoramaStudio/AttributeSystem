@@ -30,12 +30,68 @@ void UAttributeComponent::BeginPlay()
 	
 }
 
+bool UAttributeComponent::HasAttribute(FGameplayTag GameplayTag) const
+{
+	return Attributes.Contains(GameplayTag);
+}
+
 
 bool UAttributeComponent::GetAttributeValue(FGameplayTag GameplayTag, float& Value) const
 {
 	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
 		Value = Attribute->GetValue();
+		return true;
+	}
+	return false;
+}
+
+bool UAttributeComponent::AttributeHasLimit(FGameplayTag GameplayTag) const
+{
+	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
+	{
+		return Attribute->HasLimit();
+	}
+	return false;
+}
+
+bool UAttributeComponent::GetAttributeBaseValue(FGameplayTag GameplayTag, float& Value) const
+{
+	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
+	{
+		Value = Attribute->BaseValue;
+		return true;
+	}
+	return false;
+}
+
+bool UAttributeComponent::GetAttributeDeltaValue(FGameplayTag GameplayTag, float& Value) const
+{
+	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
+	{
+		Value = Attribute->Delta;
+		return true;
+	}
+	return false;
+}
+
+bool UAttributeComponent::GetAttributeMultiplierValue(FGameplayTag GameplayTag, float& Value) const
+{
+	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
+	{
+		Value = Attribute->Multiplier;
+		return true;
+	}
+	return false;
+}
+
+bool UAttributeComponent::GetAttributeLimit(FGameplayTag GameplayTag, EFloatLimitType& LimitType, float& MinLimitValue, float& MaxLimitValue) const
+{
+	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
+	{
+		LimitType = Attribute->LimitType;
+		MinLimitValue = Attribute->LimitValues.Min;
+		MaxLimitValue = Attribute->LimitValues.Max;
 		return true;
 	}
 	return false;
@@ -75,6 +131,18 @@ bool UAttributeComponent::SetAttributeMultiplierValue(FGameplayTag GameplayTag, 
 
 		ModifiedAttribute(Attribute, GameplayTag);
 
+		return true;
+	}
+	return false;
+}
+
+bool UAttributeComponent::SetAttributeLimitValues(FGameplayTag GameplayTag, EFloatLimitType LimitType, float MinLimitValue, float MaxLimitValue)
+{
+	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
+	{
+		Attribute->LimitType = LimitType;
+		Attribute->LimitValues.Min = MinLimitValue;
+		Attribute->LimitValues.Max = MaxLimitValue;
 		return true;
 	}
 	return false;

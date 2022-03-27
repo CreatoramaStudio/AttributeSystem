@@ -49,10 +49,26 @@ public:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	
+	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
+		bool HasAttribute(FGameplayTag GameplayTag) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
 		bool GetAttributeValue(FGameplayTag GameplayTag, float& Value) const;
+
+	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
+		bool AttributeHasLimit(FGameplayTag GameplayTag) const;
+
+	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
+		bool GetAttributeBaseValue(FGameplayTag GameplayTag, float& Value) const;
+
+	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
+		bool GetAttributeDeltaValue(FGameplayTag GameplayTag, float& Value) const;
+
+	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
+		bool GetAttributeMultiplierValue(FGameplayTag GameplayTag, float& Value) const;
+
+	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
+		bool GetAttributeLimit(FGameplayTag GameplayTag, EFloatLimitType& LimitType, float& MinLimitValue, float& MaxLimitValue) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
 		bool SetAttributeBaseValue(FGameplayTag GameplayTag,float Value);
@@ -62,6 +78,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
 		bool SetAttributeMultiplierValue(FGameplayTag GameplayTag, float Value);
+
+	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
+		bool SetAttributeLimitValues(FGameplayTag GameplayTag, EFloatLimitType LimitType, float MinLimitValue, float MaxLimitValue);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
 		bool AddAttributeBaseValue(FGameplayTag GameplayTag, float Value);
