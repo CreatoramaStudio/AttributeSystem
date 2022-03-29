@@ -6,6 +6,7 @@
 
 UAttributeEffect::UAttributeEffect()
 {
+	StackSize = 0;
 }
 
 UWorld* UAttributeEffect::GetWorld() const
@@ -21,39 +22,78 @@ void UAttributeEffect::InitializeVariables(UAttributeComponent* InAttributeCompo
 
 void UAttributeEffect::ExecuteEffect()
 {
-	StartEffect();
+	AddStackSize(1);
 }
 
 void UAttributeEffect::FinishEffect()
 {
-	StopEffect(false);
+	AddStackSize(-1);
+}
 
-	if (AttributeComponent)
+void UAttributeEffect::FinishAllEffects()
+{
+	for (int32 i = 0; i <= StackSize; i++)
 	{
-		AttributeComponent->GetAttributeEffects().Remove(this);
+		FinishEffect();
 	}
 }
 
-void UAttributeEffect::CancelEffect()
+void UAttributeEffect::SetStackSize(int32 Value)
 {
-	StopEffect(true);
+	int32 OldValue = StackSize;
+	StackSize = bLimitStackSize ? FMath::Clamp(Value, 0, MaxStackSize) : Value;
 
 	if (AttributeComponent)
 	{
-		AttributeComponent->GetAttributeEffects().Remove(this);
+		if (StackSize > OldValue)
+		{
+			AddEffect();
+			AttributeComponent->ModifiedAttributeEffect(true, this);
+		}
+		else if(StackSize < OldValue)
+		{
+			RemoveEffect();
+			AttributeComponent->ModifiedAttributeEffect(false, this);
+		}
+
+		if (StackSize <= 0)
+		{
+			AttributeComponent->RemoveAttributeEffect(this);
+		}
 	}
+	
+}
+
+void UAttributeEffect::SetMaxStackSize(int32 Value)
+{
+	MaxStackSize = FMath::Min(1, Value);
+}
+
+void UAttributeEffect::AddStackSize(int32 Value)
+{
+	SetStackSize(StackSize + Value);
 }
 
 void UAttributeEffect::Construct_Implementation()
 {
 }
 
-void UAttributeEffect::StartEffect_Implementation()
+void UAttributeEffect::AddEffect_Implementation()
 {
 }
 
-void UAttributeEffect::StopEffect_Implementation(bool bCanceled)
+void UAttributeEffect::RemoveEffect_Implementation()
 {
+}
+
+int32 UAttributeEffect::GetStackSize() const
+{
+	return StackSize;
+}
+
+int32 UAttributeEffect::GetMaxStackSize() const
+{
+	return MaxStackSize;
 }
 
 UAttributeComponent* UAttributeEffect::GetAttributeComponent() const

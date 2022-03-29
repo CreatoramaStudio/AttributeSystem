@@ -20,6 +20,15 @@ public:
 
 protected:
 
+	UPROPERTY(SaveGame)
+		int32 StackSize = 0;
+
+	UPROPERTY(SaveGame, EditAnywhere, Category = "Attribute Effect")
+		bool bLimitStackSize = false;
+
+	UPROPERTY(SaveGame, EditAnywhere, Category = "Attribute Effect", meta = (EditCondition = "bLimitStackSize", EditConditionHides))
+		int32 MaxStackSize = 1;
+
 	UPROPERTY()
 		UAttributeComponent* AttributeComponent;
 
@@ -45,15 +54,27 @@ public:
 		void FinishEffect();
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Effect")
-		void CancelEffect();
+		void FinishAllEffects();
+
+	UFUNCTION(BlueprintPure, Category = "Attribute Effect")
+		int32 GetStackSize() const;
+
+	UFUNCTION(BlueprintPure, Category = "Attribute Effect")
+		int32 GetMaxStackSize() const;
 
 protected:
 
-	UFUNCTION(BlueprintNativeEvent, Category = "Attribute Effect")
-		void StartEffect();
+	void SetStackSize(int32 Value);
+
+	void SetMaxStackSize(int32 Value);
+
+	void AddStackSize(int32 Value);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Attribute Effect")
-		void StopEffect(bool bCanceled);
+		void AddEffect();
+
+	UFUNCTION(BlueprintNativeEvent, Category = "Attribute Effect")
+		void RemoveEffect();
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Effect")
 		UAttributeComponent* GetAttributeComponent() const;

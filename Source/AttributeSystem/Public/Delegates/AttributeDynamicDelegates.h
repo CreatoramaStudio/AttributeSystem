@@ -12,6 +12,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUpdateAttibuteMulticast, FGamepl
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUpdateAttibuteTagMulticast, bool, bAddedAttributeTag, FGameplayTag, ModifiedAttributeTag);
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnUpdateAttibuteEffectMulticast, bool, bAddedAttributeEffect, UAttributeEffect*, AttributeEffect, int32, StackSize);
+
 
 UENUM()
 enum AAAA2

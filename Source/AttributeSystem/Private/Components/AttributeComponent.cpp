@@ -211,15 +211,24 @@ bool UAttributeComponent::UnbindAllAttributeEvents(FGameplayTag GameplayTag, con
 	return false;
 }
 
-TArray<UAttributeEffect*> UAttributeComponent::GetAttributeEffects() const
+TSet<UAttributeEffect*> UAttributeComponent::GetAttributeEffects() const
 {
 	return AttributeEffects;
 }
 
-bool UAttributeComponent::AddAttributeEffect(TSubclassOf<UAttributeEffect> AttributeEffectType)
+bool UAttributeComponent::AddAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType)
 {
 	if (AttributeEffectType)
 	{
+		for (auto& AttributeEffect : AttributeEffects)
+		{
+			if (AttributeEffect->GetClass() == AttributeEffectType)
+			{
+				AttributeEffect->ExecuteEffect();
+				return true;
+			}
+		}
+
 		UAttributeEffect* AttributeEffect = NewObject<UAttributeEffect>(Controller, AttributeEffectType);
 		AttributeEffects.Add(AttributeEffect);
 		AttributeEffect->InitializeVariables(this, Controller);
@@ -232,17 +241,44 @@ bool UAttributeComponent::AddAttributeEffect(TSubclassOf<UAttributeEffect> Attri
 	return false;
 }
 
-bool UAttributeComponent::RemoveAttributeEffect(TSubclassOf<UAttributeEffect> AttributeEffectType)
+bool UAttributeComponent::RemoveAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType)
 {
 	for (auto& AttributeEffect : AttributeEffects)
 	{
 		if (AttributeEffect->GetClass() == AttributeEffectType)
 		{
-			AttributeEffect->CancelEffect();
+			AttributeEffect->FinishEffect();
+
 			return true;
 		}
 	}
 
+	return false;
+}
+
+bool UAttributeComponent::RemoveAllAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType)
+{
+	for (auto& AttributeEffect : AttributeEffects)
+	{
+		if (AttributeEffect->GetClass() == AttributeEffectType)
+		{
+			AttributeEffect->FinishAllEffects();
+
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool UAttributeComponent::RemoveAttributeEffect(UAttributeEffect* AttributeEffect)
+{
+	if (AttributeEffects.Contains(AttributeEffect))
+	{
+		AttributeEffects.Remove(AttributeEffect);
+
+		return true;
+	}
 	return false;
 }
 
@@ -300,6 +336,14 @@ bool UAttributeComponent::AttributeTagsMatchTagQuery(FGameplayTagQuery TagQuery)
 	return AttributeTags.MatchesQuery(TagQuery);
 }
 
+void UAttributeComponent::ModifiedAttributeEffect(bool bAddedAttributeTag, UAttributeEffect* AttributeEffect)
+{
+	if (OnUpdateAttibuteEffect.IsBound())
+	{
+		OnUpdateAttibuteEffect.Broadcast(bAddedAttributeTag, AttributeEffect, AttributeEffect->GetStackSize());
+	}
+}
+
 void UAttributeComponent::ModifiedAttribute(FAttribute* Attribute, FGameplayTag GameplayTag)
 {
 	if (Attribute->OnUpdateAttibute.IsBound())
@@ -322,7 +366,7 @@ void UAttributeComponent::CreateDefaultAttributeEffects()
 
 	for (auto& AttributeEffectType : DefaultAttributeEffectTypes)
 	{
-		AddAttributeEffect(AttributeEffectType);
+		AddAttributeEffectByType(AttributeEffectType);
 	}
 }
 

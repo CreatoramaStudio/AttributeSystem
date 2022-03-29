@@ -20,16 +20,19 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Attribute Component|Tag|Event")
 		FOnUpdateAttibuteTagMulticast OnUpdateAttibuteTag;
 
+	UPROPERTY(BlueprintAssignable, Category = "Attribute Component|Tag|Event")
+		FOnUpdateAttibuteEffectMulticast OnUpdateAttibuteEffect;
+
 protected:
 
 	UPROPERTY(SaveGame, EditAnywhere, Category = "Attribute Component")
 		TMap<FGameplayTag, FAttribute> Attributes;
-	
+
 	UPROPERTY(EditAnywhere, Category = "Attribute Component")
 		TArray<TSubclassOf<UAttributeEffect>> DefaultAttributeEffectTypes;
 
 	UPROPERTY(SaveGame)
-		TArray<UAttributeEffect*> AttributeEffects;
+		TSet<UAttributeEffect*> AttributeEffects;
 
 	UPROPERTY(SaveGame, EditAnywhere, Category = "Attribute Component")
 		FGameplayTagContainer AttributeTags;
@@ -71,7 +74,7 @@ public:
 		bool GetAttributeLimit(FGameplayTag GameplayTag, EFloatLimitType& LimitType, float& MinLimitValue, float& MaxLimitValue) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
-		bool SetAttributeBaseValue(FGameplayTag GameplayTag,float Value);
+		bool SetAttributeBaseValue(FGameplayTag GameplayTag, float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
 		bool SetAttributeDeltaValue(FGameplayTag GameplayTag, float Value);
@@ -101,13 +104,18 @@ public:
 		bool UnbindAllAttributeEvents(FGameplayTag GameplayTag, const FOnUpdateAttibute& Value);
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Effect")
-		TArray<UAttributeEffect*> GetAttributeEffects() const;
+		TSet<UAttributeEffect*> GetAttributeEffects() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Effect")
-		bool AddAttributeEffect(TSubclassOf<UAttributeEffect> AttributeEffectType);
+		bool AddAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Effect")
-		bool RemoveAttributeEffect(TSubclassOf<UAttributeEffect> AttributeEffectType);
+		bool RemoveAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType);
+
+	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Effect")
+		bool RemoveAllAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType);
+
+	bool RemoveAttributeEffect(UAttributeEffect* AttributeEffect);
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Tag")
 		FString GetAttributeTagsString() const;
@@ -122,13 +130,15 @@ public:
 		bool HasAttributeTags(FGameplayTag AttributeTag) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Tag")
-		bool HasAnyAttributeTags(FGameplayTagContainer OtherAttributeTags,bool bExactMatch) const;
+		bool HasAnyAttributeTags(FGameplayTagContainer OtherAttributeTags, bool bExactMatch) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Tag")
 		bool HasAllAttributeTags(FGameplayTagContainer OtherAttributeTags, bool bExactMatch) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Tag")
 		bool AttributeTagsMatchTagQuery(FGameplayTagQuery TagQuery) const;
+
+	void ModifiedAttributeEffect(bool bAddedAttributeTag, UAttributeEffect* AttributeEffect);
 
 protected:
 
@@ -139,5 +149,5 @@ protected:
 	virtual void CreateDefaultAttributeEffects();
 
 private:
-		
+
 };
