@@ -2,6 +2,8 @@
 
 
 #include "Components/AttributeComponent.h"
+
+#include "LogAttributeSystem.h"
 #include "Objects/AttributeEffect.h"
 
 // Sets default values for this component's properties
@@ -30,13 +32,13 @@ void UAttributeComponent::BeginPlay()
 	
 }
 
-bool UAttributeComponent::HasAttribute(FGameplayTag GameplayTag) const
+bool UAttributeComponent::HasAttribute(const FGameplayTag GameplayTag) const
 {
 	return Attributes.Contains(GameplayTag);
 }
 
 
-bool UAttributeComponent::GetAttributeValue(FGameplayTag GameplayTag, float& Value) const
+bool UAttributeComponent::GetAttributeValue(const FGameplayTag GameplayTag, float& Value) const
 {
 	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -46,7 +48,7 @@ bool UAttributeComponent::GetAttributeValue(FGameplayTag GameplayTag, float& Val
 	return false;
 }
 
-bool UAttributeComponent::AttributeHasLimit(FGameplayTag GameplayTag) const
+bool UAttributeComponent::AttributeHasLimit(const FGameplayTag GameplayTag) const
 {
 	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -55,17 +57,17 @@ bool UAttributeComponent::AttributeHasLimit(FGameplayTag GameplayTag) const
 	return false;
 }
 
-bool UAttributeComponent::GetAttributeBaseValue(FGameplayTag GameplayTag, float& Value) const
+bool UAttributeComponent::GetAttributeBaseValue(const FGameplayTag GameplayTag, float& Value) const
 {
 	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
-		Value = Attribute->BaseValue;
+		Value = Attribute->GetBaseValue();
 		return true;
 	}
 	return false;
 }
 
-bool UAttributeComponent::GetAttributeDeltaValue(FGameplayTag GameplayTag, float& Value) const
+bool UAttributeComponent::GetAttributeDeltaValue(const FGameplayTag GameplayTag, float& Value) const
 {
 	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -75,7 +77,7 @@ bool UAttributeComponent::GetAttributeDeltaValue(FGameplayTag GameplayTag, float
 	return false;
 }
 
-bool UAttributeComponent::GetAttributeMultiplierValue(FGameplayTag GameplayTag, float& Value) const
+bool UAttributeComponent::GetAttributeMultiplierValue(const FGameplayTag GameplayTag, float& Value) const
 {
 	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -85,7 +87,7 @@ bool UAttributeComponent::GetAttributeMultiplierValue(FGameplayTag GameplayTag, 
 	return false;
 }
 
-bool UAttributeComponent::GetAttributeLimit(FGameplayTag GameplayTag, EFloatLimitType& LimitType, float& MinLimitValue, float& MaxLimitValue) const
+bool UAttributeComponent::GetAttributeLimit(const FGameplayTag GameplayTag, EFloatLimitType& LimitType, float& MinLimitValue, float& MaxLimitValue) const
 {
 	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -97,11 +99,11 @@ bool UAttributeComponent::GetAttributeLimit(FGameplayTag GameplayTag, EFloatLimi
 	return false;
 }
 
-bool UAttributeComponent::SetAttributeBaseValue(FGameplayTag GameplayTag, float Value)
+bool UAttributeComponent::SetAttributeBaseValue(const FGameplayTag GameplayTag, const float Value)
 {
 	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
-		Attribute->BaseValue = Value;
+		Attribute->SetBaseValue(Value);
 
 		ModifiedAttribute(Attribute,GameplayTag);
 
@@ -110,7 +112,7 @@ bool UAttributeComponent::SetAttributeBaseValue(FGameplayTag GameplayTag, float 
 	return false;
 }
 
-bool UAttributeComponent::SetAttributeDeltaValue(FGameplayTag GameplayTag, float Value)
+bool UAttributeComponent::SetAttributeDeltaValue(const FGameplayTag GameplayTag, const float Value)
 {
 	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -123,7 +125,7 @@ bool UAttributeComponent::SetAttributeDeltaValue(FGameplayTag GameplayTag, float
 	return false;
 }
 
-bool UAttributeComponent::SetAttributeMultiplierValue(FGameplayTag GameplayTag, float Value)
+bool UAttributeComponent::SetAttributeMultiplierValue(const FGameplayTag GameplayTag, const float Value)
 {
 	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -136,7 +138,7 @@ bool UAttributeComponent::SetAttributeMultiplierValue(FGameplayTag GameplayTag, 
 	return false;
 }
 
-bool UAttributeComponent::SetAttributeLimitValues(FGameplayTag GameplayTag, EFloatLimitType LimitType, float MinLimitValue, float MaxLimitValue)
+bool UAttributeComponent::SetAttributeLimitValues(const FGameplayTag GameplayTag, const EFloatLimitType LimitType, const float MinLimitValue, const float MaxLimitValue)
 {
 	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -148,20 +150,20 @@ bool UAttributeComponent::SetAttributeLimitValues(FGameplayTag GameplayTag, EFlo
 	return false;
 }
 
-bool UAttributeComponent::AddAttributeBaseValue(FGameplayTag GameplayTag, float Value)
+bool UAttributeComponent::AddAttributeBaseValue(const FGameplayTag GameplayTag, const float Value)
 {
-	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
+	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
-		SetAttributeBaseValue(GameplayTag, Attribute->BaseValue + Value);
+		SetAttributeBaseValue(GameplayTag, Attribute->GetBaseValue() + Value);
 
 		return true;
 	}
 	return false;
 }
 
-bool UAttributeComponent::AddAttributeDeltaValue(FGameplayTag GameplayTag, float Value)
+bool UAttributeComponent::AddAttributeDeltaValue(const FGameplayTag GameplayTag, const float Value)
 {
-	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
+	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
 		SetAttributeDeltaValue(GameplayTag, Attribute->Delta + Value);
 
@@ -170,9 +172,9 @@ bool UAttributeComponent::AddAttributeDeltaValue(FGameplayTag GameplayTag, float
 	return false;
 }
 
-bool UAttributeComponent::AddAttributeMultiplierValue(FGameplayTag GameplayTag, float Value)
+bool UAttributeComponent::AddAttributeMultiplierValue(const FGameplayTag GameplayTag, const float Value)
 {
-	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
+	if (const FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
 		SetAttributeMultiplierValue(GameplayTag, Attribute->Multiplier + Value);
 
@@ -181,7 +183,7 @@ bool UAttributeComponent::AddAttributeMultiplierValue(FGameplayTag GameplayTag, 
 	return false;
 }
 
-bool UAttributeComponent::BindAttributeEvent(FGameplayTag GameplayTag, const FOnUpdateAttibute& Value)
+bool UAttributeComponent::BindAttributeEvent(const FGameplayTag GameplayTag, const FOnUpdateAttribute& Value)
 {
 	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -191,7 +193,7 @@ bool UAttributeComponent::BindAttributeEvent(FGameplayTag GameplayTag, const FOn
 	return false;
 }
 
-bool UAttributeComponent::UnbindAttributeEvent(FGameplayTag GameplayTag, const FOnUpdateAttibute& Value)
+bool UAttributeComponent::UnbindAttributeEvent(const FGameplayTag GameplayTag, const FOnUpdateAttribute& Value)
 {
 	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -201,7 +203,7 @@ bool UAttributeComponent::UnbindAttributeEvent(FGameplayTag GameplayTag, const F
 	return false;
 }
 
-bool UAttributeComponent::UnbindAllAttributeEvents(FGameplayTag GameplayTag, const FOnUpdateAttibute& Value)
+bool UAttributeComponent::UnbindAllAttributeEvents(const FGameplayTag GameplayTag, const FOnUpdateAttribute& Value)
 {
 	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
@@ -216,11 +218,11 @@ TSet<UAttributeEffect*> UAttributeComponent::GetAttributeEffects() const
 	return AttributeEffects;
 }
 
-bool UAttributeComponent::AddAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType)
+bool UAttributeComponent::AddAttributeEffectByType(const TSubclassOf<UAttributeEffect> AttributeEffectType)
 {
 	if (AttributeEffectType)
 	{
-		for (auto& AttributeEffect : AttributeEffects)
+		for (const auto& AttributeEffect : AttributeEffects)
 		{
 			if (AttributeEffect->GetClass() == AttributeEffectType)
 			{
@@ -241,9 +243,9 @@ bool UAttributeComponent::AddAttributeEffectByType(TSubclassOf<UAttributeEffect>
 	return false;
 }
 
-bool UAttributeComponent::RemoveAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType)
+bool UAttributeComponent::RemoveAttributeEffectByType(const TSubclassOf<UAttributeEffect> AttributeEffectType)
 {
-	for (auto& AttributeEffect : AttributeEffects)
+	for (const auto& AttributeEffect : AttributeEffects)
 	{
 		if (AttributeEffect->GetClass() == AttributeEffectType)
 		{
@@ -256,9 +258,9 @@ bool UAttributeComponent::RemoveAttributeEffectByType(TSubclassOf<UAttributeEffe
 	return false;
 }
 
-bool UAttributeComponent::RemoveAllAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType)
+bool UAttributeComponent::RemoveAllAttributeEffectByType(const TSubclassOf<UAttributeEffect> AttributeEffectType)
 {
-	for (auto& AttributeEffect : AttributeEffects)
+	for (const auto& AttributeEffect : AttributeEffects)
 	{
 		if (AttributeEffect->GetClass() == AttributeEffectType)
 		{
@@ -271,7 +273,7 @@ bool UAttributeComponent::RemoveAllAttributeEffectByType(TSubclassOf<UAttributeE
 	return false;
 }
 
-bool UAttributeComponent::RemoveAttributeEffect(UAttributeEffect* AttributeEffect)
+bool UAttributeComponent::RemoveAttributeEffect(const UAttributeEffect* AttributeEffect)
 {
 	if (AttributeEffects.Contains(AttributeEffect))
 	{
@@ -287,7 +289,7 @@ FString UAttributeComponent::GetAttributeTagsString() const
 	return AttributeTags.ToString();
 }
 
-bool UAttributeComponent::AddAttributeTag(FGameplayTag AttributeTag)
+bool UAttributeComponent::AddAttributeTag(const FGameplayTag AttributeTag)
 {
 	if (!AttributeTags.HasTag(AttributeTag))
 	{
@@ -298,7 +300,7 @@ bool UAttributeComponent::AddAttributeTag(FGameplayTag AttributeTag)
 	return false;
 }
 
-bool UAttributeComponent::RemoveAttributeTag(FGameplayTag AttributeTag)
+bool UAttributeComponent::RemoveAttributeTag(const FGameplayTag AttributeTag)
 {
 	if (AttributeTags.RemoveTag(AttributeTag))
 	{
@@ -308,12 +310,12 @@ bool UAttributeComponent::RemoveAttributeTag(FGameplayTag AttributeTag)
 	return false;
 }
 
-bool UAttributeComponent::HasAttributeTags(FGameplayTag AttributeTag) const
+bool UAttributeComponent::HasAttributeTags(const FGameplayTag AttributeTag) const
 {
 	return AttributeTags.HasTag(AttributeTag);
 }
 
-bool UAttributeComponent::HasAnyAttributeTags(FGameplayTagContainer OtherAttributeTags, bool bExactMatch) const
+bool UAttributeComponent::HasAnyAttributeTags(FGameplayTagContainer OtherAttributeTags, const bool bExactMatch) const
 {
 	if (bExactMatch)
 	{
@@ -322,7 +324,7 @@ bool UAttributeComponent::HasAnyAttributeTags(FGameplayTagContainer OtherAttribu
 	return AttributeTags.HasAny(AttributeTags);
 }
 
-bool UAttributeComponent::HasAllAttributeTags(FGameplayTagContainer OtherAttributeTags, bool bExactMatch) const
+bool UAttributeComponent::HasAllAttributeTags(FGameplayTagContainer OtherAttributeTags, const bool bExactMatch) const
 {
 	if (bExactMatch)
 	{
@@ -331,40 +333,48 @@ bool UAttributeComponent::HasAllAttributeTags(FGameplayTagContainer OtherAttribu
 	return AttributeTags.HasAll(AttributeTags);
 }
 
-bool UAttributeComponent::AttributeTagsMatchTagQuery(FGameplayTagQuery TagQuery) const
+bool UAttributeComponent::AttributeTagsMatchTagQuery(const FGameplayTagQuery TagQuery) const
 {
 	return AttributeTags.MatchesQuery(TagQuery);
 }
 
-void UAttributeComponent::ModifiedAttributeEffect(bool bAddedAttributeTag, UAttributeEffect* AttributeEffect)
+void UAttributeComponent::ModifiedAttributeEffect(const bool bAddedAttributeTag, UAttributeEffect* AttributeEffect) const
 {
-	if (OnUpdateAttibuteEffect.IsBound())
+	if (OnUpdateAttributeEffect.IsBound())
 	{
-		OnUpdateAttibuteEffect.Broadcast(bAddedAttributeTag, AttributeEffect, AttributeEffect->GetStackSize());
+		OnUpdateAttributeEffect.Broadcast(bAddedAttributeTag, AttributeEffect, AttributeEffect->GetStackSize());
 	}
+	
+	const FString EffectState = bAddedAttributeTag ? "Added" : "Removed";
+	FLogAttributeSystem::VisLogString(GetOwner(), EffectState + " Attribute Effect: " + AttributeEffect->Name.ToString());
 }
 
-void UAttributeComponent::ModifiedAttribute(FAttribute* Attribute, FGameplayTag GameplayTag)
+void UAttributeComponent::ModifiedAttribute(const FAttribute* Attribute, const FGameplayTag GameplayTag) const
 {
 	if (Attribute->OnUpdateAttibute.IsBound())
 	{
 		Attribute->OnUpdateAttibute.Broadcast(GameplayTag, Attribute->GetValue());
 	}
+
+	FLogAttributeSystem::VisLogString(GetOwner(),"Modified Attribute: " + GameplayTag.ToString() + " Value: " + FString::SanitizeFloat(Attribute->GetValue()));
 }
 
-void UAttributeComponent::ModifiedAttributeTag(bool bAddedAttributeTag, FGameplayTag AttributeTag)
+void UAttributeComponent::ModifiedAttributeTag(const bool bAddedAttributeTag, const FGameplayTag AttributeTag) const
 {
-	if (OnUpdateAttibuteTag.IsBound())
+	if (OnUpdateAttributeTag.IsBound())
 	{
-		OnUpdateAttibuteTag.Broadcast(bAddedAttributeTag, AttributeTag);
+		OnUpdateAttributeTag.Broadcast(bAddedAttributeTag, AttributeTag);
 	}
+	
+	const FString TagState = bAddedAttributeTag ? "Added" : "Removed";
+	FLogAttributeSystem::VisLogString(GetOwner(), TagState + " Attribute Tag: " + AttributeTag.ToString());
 }
 
 void UAttributeComponent::CreateDefaultAttributeEffects()
 {
 	AttributeEffects.Empty();
 
-	for (auto& AttributeEffectType : DefaultAttributeEffectTypes)
+	for (const auto& AttributeEffectType : DefaultAttributeEffectTypes)
 	{
 		AddAttributeEffectByType(AttributeEffectType);
 	}

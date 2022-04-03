@@ -6,13 +6,13 @@
 #include "GameplayTagContainer.h"
 #include "AttributeDynamicDelegates.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE_TwoParams(FOnUpdateAttibute, FGameplayTag, AttributeTag, float, Value);
+DECLARE_DYNAMIC_DELEGATE_TwoParams(FOnUpdateAttribute, FGameplayTag, AttributeTag, float, Value);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUpdateAttibuteMulticast, FGameplayTag, AttributeTag, float, Value);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUpdateAttributeMulticast, FGameplayTag, AttributeTag, float, Value);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUpdateAttibuteTagMulticast, bool, bAddedAttributeTag, FGameplayTag, ModifiedAttributeTag);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOnUpdateAttributeTagMulticast, bool, bAddedAttributeTag, FGameplayTag, ModifiedAttributeTag);
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnUpdateAttibuteEffectMulticast, bool, bAddedAttributeEffect, UAttributeEffect*, AttributeEffect, int32, StackSize);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FOnUpdateAttributeEffectMulticast, bool, bAddedAttributeEffect, UAttributeEffect*, AttributeEffect, int32, StackSize);
 
 
 UENUM()

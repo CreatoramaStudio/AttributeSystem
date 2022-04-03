@@ -10,35 +10,35 @@
 
 class UAttributeEffect;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( ClassGroup=(Attribute), meta=(BlueprintSpawnableComponent) )
 class ATTRIBUTESYSTEM_API UAttributeComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:
 
-	UPROPERTY(BlueprintAssignable, Category = "Attribute Component|Tag|Event")
-		FOnUpdateAttibuteTagMulticast OnUpdateAttibuteTag;
+	UPROPERTY(SaveGame,BlueprintAssignable, Category = "Attribute Component|Tag|Event")
+	FOnUpdateAttributeTagMulticast OnUpdateAttributeTag;
 
-	UPROPERTY(BlueprintAssignable, Category = "Attribute Component|Tag|Event")
-		FOnUpdateAttibuteEffectMulticast OnUpdateAttibuteEffect;
+	UPROPERTY(SaveGame,BlueprintAssignable, Category = "Attribute Component|Tag|Event")
+	FOnUpdateAttributeEffectMulticast OnUpdateAttributeEffect;
 
 protected:
 
 	UPROPERTY(SaveGame, EditAnywhere, Category = "Attribute Component")
-		TMap<FGameplayTag, FAttribute> Attributes;
+	TMap<FGameplayTag, FAttribute> Attributes;
 
 	UPROPERTY(EditAnywhere, Category = "Attribute Component")
-		TArray<TSubclassOf<UAttributeEffect>> DefaultAttributeEffectTypes;
+	TArray<TSubclassOf<UAttributeEffect>> DefaultAttributeEffectTypes;
 
 	UPROPERTY(SaveGame)
-		TSet<UAttributeEffect*> AttributeEffects;
+	TSet<UAttributeEffect*> AttributeEffects;
 
 	UPROPERTY(SaveGame, EditAnywhere, Category = "Attribute Component")
-		FGameplayTagContainer AttributeTags;
+	FGameplayTagContainer AttributeTags;
 
 	UPROPERTY()
-		AController* Controller;
+	AController* Controller;
 
 private:
 
@@ -53,101 +53,100 @@ public:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
-		bool HasAttribute(FGameplayTag GameplayTag) const;
+	bool HasAttribute(FGameplayTag GameplayTag) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
-		bool GetAttributeValue(FGameplayTag GameplayTag, float& Value) const;
+	bool GetAttributeValue(FGameplayTag GameplayTag, float& Value) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
-		bool AttributeHasLimit(FGameplayTag GameplayTag) const;
+	bool AttributeHasLimit(FGameplayTag GameplayTag) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
-		bool GetAttributeBaseValue(FGameplayTag GameplayTag, float& Value) const;
+	bool GetAttributeBaseValue(FGameplayTag GameplayTag, float& Value) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
-		bool GetAttributeDeltaValue(FGameplayTag GameplayTag, float& Value) const;
+	bool GetAttributeDeltaValue(FGameplayTag GameplayTag, float& Value) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
-		bool GetAttributeMultiplierValue(FGameplayTag GameplayTag, float& Value) const;
+	bool GetAttributeMultiplierValue(FGameplayTag GameplayTag, float& Value) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Attribute")
-		bool GetAttributeLimit(FGameplayTag GameplayTag, EFloatLimitType& LimitType, float& MinLimitValue, float& MaxLimitValue) const;
+	bool GetAttributeLimit(FGameplayTag GameplayTag, EFloatLimitType& LimitType, float& MinLimitValue, float& MaxLimitValue) const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
-		bool SetAttributeBaseValue(FGameplayTag GameplayTag, float Value);
+	bool SetAttributeBaseValue(FGameplayTag GameplayTag, float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
-		bool SetAttributeDeltaValue(FGameplayTag GameplayTag, float Value);
+	bool SetAttributeDeltaValue(FGameplayTag GameplayTag, float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
-		bool SetAttributeMultiplierValue(FGameplayTag GameplayTag, float Value);
+	bool SetAttributeMultiplierValue(FGameplayTag GameplayTag, float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
-		bool SetAttributeLimitValues(FGameplayTag GameplayTag, EFloatLimitType LimitType, float MinLimitValue, float MaxLimitValue);
+	bool SetAttributeLimitValues(const FGameplayTag GameplayTag, EFloatLimitType LimitType, float MinLimitValue, float MaxLimitValue);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
-		bool AddAttributeBaseValue(FGameplayTag GameplayTag, float Value);
+	bool AddAttributeBaseValue(const FGameplayTag GameplayTag, const float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
-		bool AddAttributeDeltaValue(FGameplayTag GameplayTag, float Value);
+	bool AddAttributeDeltaValue(const FGameplayTag GameplayTag, const float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute")
-		bool AddAttributeMultiplierValue(FGameplayTag GameplayTag, float Value);
+	bool AddAttributeMultiplierValue(const FGameplayTag GameplayTag, const float Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute|Event")
-		bool BindAttributeEvent(FGameplayTag GameplayTag, const FOnUpdateAttibute& Value);
+	bool BindAttributeEvent(const FGameplayTag GameplayTag, const FOnUpdateAttribute& Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute|Event")
-		bool UnbindAttributeEvent(FGameplayTag GameplayTag, const FOnUpdateAttibute& Value);
+	bool UnbindAttributeEvent(const FGameplayTag GameplayTag, const FOnUpdateAttribute& Value);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Attribute|Event")
-		bool UnbindAllAttributeEvents(FGameplayTag GameplayTag, const FOnUpdateAttibute& Value);
+	bool UnbindAllAttributeEvents(const FGameplayTag GameplayTag, const FOnUpdateAttribute& Value);
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Effect")
-		TSet<UAttributeEffect*> GetAttributeEffects() const;
+	TSet<UAttributeEffect*> GetAttributeEffects() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Effect")
-		bool AddAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType);
+	bool AddAttributeEffectByType(const TSubclassOf<UAttributeEffect> AttributeEffectType);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Effect")
-		bool RemoveAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType);
+	bool RemoveAttributeEffectByType(const TSubclassOf<UAttributeEffect> AttributeEffectType);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Effect")
-		bool RemoveAllAttributeEffectByType(TSubclassOf<UAttributeEffect> AttributeEffectType);
+	bool RemoveAllAttributeEffectByType(const TSubclassOf<UAttributeEffect> AttributeEffectType);
 
-	bool RemoveAttributeEffect(UAttributeEffect* AttributeEffect);
+	bool RemoveAttributeEffect(const UAttributeEffect* AttributeEffect);
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Tag")
-		FString GetAttributeTagsString() const;
+	FString GetAttributeTagsString() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Tag")
-		bool AddAttributeTag(FGameplayTag AttributeTag);
+	bool AddAttributeTag(const FGameplayTag AttributeTag);
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Tag")
-		bool RemoveAttributeTag(FGameplayTag AttributeTag);
+	bool RemoveAttributeTag(const FGameplayTag AttributeTag);
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Tag")
-		bool HasAttributeTags(FGameplayTag AttributeTag) const;
+	bool HasAttributeTags(const FGameplayTag AttributeTag) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Tag")
-		bool HasAnyAttributeTags(FGameplayTagContainer OtherAttributeTags, bool bExactMatch) const;
+	bool HasAnyAttributeTags(FGameplayTagContainer OtherAttributeTags, const bool bExactMatch) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Tag")
-		bool HasAllAttributeTags(FGameplayTagContainer OtherAttributeTags, bool bExactMatch) const;
+	bool HasAllAttributeTags(FGameplayTagContainer OtherAttributeTags, const bool bExactMatch) const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Tag")
-		bool AttributeTagsMatchTagQuery(FGameplayTagQuery TagQuery) const;
+	bool AttributeTagsMatchTagQuery(const FGameplayTagQuery TagQuery) const;
 
-	void ModifiedAttributeEffect(bool bAddedAttributeTag, UAttributeEffect* AttributeEffect);
+	void ModifiedAttributeEffect(const bool bAddedAttributeTag, UAttributeEffect* AttributeEffect) const;
 
 protected:
 
-	void ModifiedAttribute(FAttribute* Attribute, FGameplayTag GameplayTag);
+	void ModifiedAttribute(const FAttribute* Attribute,const FGameplayTag GameplayTag) const;
 
-	void ModifiedAttributeTag(bool bAddedAttributeTag, FGameplayTag AttributeTag);
+	void ModifiedAttributeTag(const bool bAddedAttributeTag,const FGameplayTag AttributeTag) const;
 
 	virtual void CreateDefaultAttributeEffects();
 
 private:
-
 };

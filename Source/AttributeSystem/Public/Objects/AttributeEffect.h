@@ -17,6 +17,9 @@ class ATTRIBUTESYSTEM_API UAttributeEffect : public UObject
 	GENERATED_BODY()
 
 public:
+	
+	UPROPERTY(SaveGame, EditAnywhere, BlueprintReadWrite, Category = "Attribute Effect")
+	FText Name;
 
 protected:
 

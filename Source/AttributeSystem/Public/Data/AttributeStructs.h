@@ -8,18 +8,17 @@
 #include "Delegates/AttributeDynamicDelegates.h"
 #include "AttributeStructs.generated.h"
 
-class UAttributeChanged;
-
 USTRUCT(BlueprintType)
 struct ATTRIBUTESYSTEM_API FAttribute
 {
     GENERATED_BODY()
 
-
-public:
+protected:
 
     UPROPERTY(SaveGame, EditAnywhere)
         float BaseValue = 0;
+
+public:
 
     UPROPERTY(SaveGame, EditAnywhere)
         float Delta = 0;
@@ -33,16 +32,38 @@ public:
     UPROPERTY(SaveGame, EditAnywhere, meta = (EditCondition = "LimitType!=EFloatLimitType::None", EditConditionHides))
         FFloatInterval LimitValues = FFloatInterval(0, 0);
 
-    UPROPERTY()
-    FOnUpdateAttibuteMulticast OnUpdateAttibute;
+    UPROPERTY(SaveGame)
+        FOnUpdateAttributeMulticast OnUpdateAttibute;
 
-protected:  
-
-    
+protected:
 
 private:
 
 public:
+
+    void SetBaseValue(float Value)
+    {
+        switch (LimitType)
+        {
+        case EFloatLimitType::None:
+            BaseValue = Value;
+            break;
+        case EFloatLimitType::Min:
+            BaseValue = FMath::Max(Value, LimitValues.Min);
+            break;
+        case EFloatLimitType::Max:
+            BaseValue = FMath::Min(Value, LimitValues.Max);
+            break;
+        case EFloatLimitType::MinMax:
+            BaseValue = FMath::Clamp(Value, LimitValues.Min, LimitValues.Max);
+            break;
+        }
+    }
+
+    float GetBaseValue() const
+    {
+        return BaseValue;
+    }
 
     float GetValue() const
     {
