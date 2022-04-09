@@ -17,26 +17,23 @@ class ATTRIBUTESYSTEM_API UAttributeEffect : public UObject
 	GENERATED_BODY()
 
 public:
-	
-	UPROPERTY(SaveGame, EditAnywhere, BlueprintReadWrite, Category = "Attribute Effect")
-	FText Name;
 
 protected:
 
 	UPROPERTY(SaveGame)
-		int32 StackSize = 0;
+	int32 StackSize = 0;
 
 	UPROPERTY(SaveGame, EditAnywhere, Category = "Attribute Effect")
-		bool bLimitStackSize = false;
+	bool bLimitStackSize = false;
 
 	UPROPERTY(SaveGame, EditAnywhere, Category = "Attribute Effect", meta = (EditCondition = "bLimitStackSize", EditConditionHides))
-		int32 MaxStackSize = 1;
+	int32 MaxStackSize = 1;
 
-	UPROPERTY()
-		UAttributeComponent* AttributeComponent;
+	UPROPERTY(SaveGame)
+	TObjectPtr<UAttributeComponent> AttributeComponent;
 
-	UPROPERTY()
-		AController* Controller;
+	UPROPERTY(SaveGame)
+	TObjectPtr<AController> Controller;
 
 private:
 
@@ -46,24 +43,24 @@ public:
 
 	virtual UWorld* GetWorld() const override;
 
-	void InitializeVariables(UAttributeComponent* InAttributeComponent, AController* InController);
+	void InitializeVariables(TObjectPtr<UAttributeComponent> InAttributeComponent, TObjectPtr<AController> InController);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Attribute Effect")
-		void Construct();
+	void Construct();
 
 	void ExecuteEffect();
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Effect")
-		void FinishEffect();
+	void FinishEffect();
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Effect")
-		void FinishAllEffects();
+	void FinishAllEffects();
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Effect")
-		int32 GetStackSize() const;
+	int32 GetStackSize() const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Effect")
-		int32 GetMaxStackSize() const;
+	int32 GetMaxStackSize() const;
 
 protected:
 
@@ -74,20 +71,19 @@ protected:
 	void AddStackSize(int32 Value);
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Attribute Effect")
-		void AddEffect();
+	void AddEffect();
 
 	UFUNCTION(BlueprintNativeEvent, Category = "Attribute Effect")
-		void RemoveEffect();
+	void RemoveEffect();
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Effect")
-		UAttributeComponent* GetAttributeComponent() const;
+	UAttributeComponent* GetAttributeComponent() const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Effect")
-		AController* GetController() const;
+	AController* GetController() const;
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Effect")
-		APawn* GetPawn() const;
+	APawn* GetPawn() const;
 
 private:
-
 };

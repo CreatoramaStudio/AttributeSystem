@@ -32,13 +32,13 @@ protected:
 	TArray<TSubclassOf<UAttributeEffect>> DefaultAttributeEffectTypes;
 
 	UPROPERTY(SaveGame)
-	TSet<UAttributeEffect*> AttributeEffects;
+	TSet<TObjectPtr<UAttributeEffect>> AttributeEffects;
 
 	UPROPERTY(SaveGame, EditAnywhere, Category = "Attribute Component")
 	FGameplayTagContainer AttributeTags;
 
-	UPROPERTY()
-	AController* Controller;
+	UPROPERTY(SaveGame)
+	TObjectPtr<AController> Controller;
 
 private:
 

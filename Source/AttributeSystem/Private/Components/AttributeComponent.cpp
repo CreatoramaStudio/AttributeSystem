@@ -187,7 +187,7 @@ bool UAttributeComponent::BindAttributeEvent(const FGameplayTag GameplayTag, con
 {
 	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
-		Attribute->OnUpdateAttibute.Add(Value);
+		Attribute->OnUpdateAttribute.Add(Value);
 		return true;
 	}
 	return false;
@@ -197,7 +197,7 @@ bool UAttributeComponent::UnbindAttributeEvent(const FGameplayTag GameplayTag, c
 {
 	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
-		Attribute->OnUpdateAttibute.Remove(Value);
+		Attribute->OnUpdateAttribute.Remove(Value);
 		return true;
 	}
 	return false;
@@ -207,7 +207,7 @@ bool UAttributeComponent::UnbindAllAttributeEvents(const FGameplayTag GameplayTa
 {
 	if (FAttribute* Attribute = Attributes.Find(GameplayTag))
 	{
-		Attribute->OnUpdateAttibute.Clear();
+		Attribute->OnUpdateAttribute.Clear();
 		return true;
 	}
 	return false;
@@ -215,7 +215,7 @@ bool UAttributeComponent::UnbindAllAttributeEvents(const FGameplayTag GameplayTa
 
 TSet<UAttributeEffect*> UAttributeComponent::GetAttributeEffects() const
 {
-	return AttributeEffects;
+	return TSet<UAttributeEffect*>(AttributeEffects.Array());
 }
 
 bool UAttributeComponent::AddAttributeEffectByType(const TSubclassOf<UAttributeEffect> AttributeEffectType)
@@ -231,7 +231,7 @@ bool UAttributeComponent::AddAttributeEffectByType(const TSubclassOf<UAttributeE
 			}
 		}
 
-		UAttributeEffect* AttributeEffect = NewObject<UAttributeEffect>(Controller, AttributeEffectType);
+		const TObjectPtr<UAttributeEffect> AttributeEffect = NewObject<UAttributeEffect>(Controller, AttributeEffectType);
 		AttributeEffects.Add(AttributeEffect);
 		AttributeEffect->InitializeVariables(this, Controller);
 		AttributeEffect->Construct();
@@ -315,22 +315,22 @@ bool UAttributeComponent::HasAttributeTags(const FGameplayTag AttributeTag) cons
 	return AttributeTags.HasTag(AttributeTag);
 }
 
-bool UAttributeComponent::HasAnyAttributeTags(FGameplayTagContainer OtherAttributeTags, const bool bExactMatch) const
+bool UAttributeComponent::HasAnyAttributeTags(const FGameplayTagContainer OtherAttributeTags, const bool bExactMatch) const
 {
 	if (bExactMatch)
 	{
-		return AttributeTags.HasAnyExact(AttributeTags);
+		return AttributeTags.HasAnyExact(OtherAttributeTags);
 	}
-	return AttributeTags.HasAny(AttributeTags);
+	return AttributeTags.HasAny(OtherAttributeTags);
 }
 
-bool UAttributeComponent::HasAllAttributeTags(FGameplayTagContainer OtherAttributeTags, const bool bExactMatch) const
+bool UAttributeComponent::HasAllAttributeTags(const FGameplayTagContainer OtherAttributeTags, const bool bExactMatch) const
 {
 	if (bExactMatch)
 	{
-		return AttributeTags.HasAllExact(AttributeTags);
+		return AttributeTags.HasAllExact(OtherAttributeTags);
 	}
-	return AttributeTags.HasAll(AttributeTags);
+	return AttributeTags.HasAll(OtherAttributeTags);
 }
 
 bool UAttributeComponent::AttributeTagsMatchTagQuery(const FGameplayTagQuery TagQuery) const
@@ -346,14 +346,14 @@ void UAttributeComponent::ModifiedAttributeEffect(const bool bAddedAttributeTag,
 	}
 	
 	const FString EffectState = bAddedAttributeTag ? "Added" : "Removed";
-	FLogAttributeSystem::VisLogString(GetOwner(), EffectState + " Attribute Effect: " + AttributeEffect->Name.ToString());
+	FLogAttributeSystem::VisLogString(GetOwner(), EffectState + " Attribute Effect: " + AttributeEffect->GetName());
 }
 
 void UAttributeComponent::ModifiedAttribute(const FAttribute* Attribute, const FGameplayTag GameplayTag) const
 {
-	if (Attribute->OnUpdateAttibute.IsBound())
+	if (Attribute->OnUpdateAttribute.IsBound())
 	{
-		Attribute->OnUpdateAttibute.Broadcast(GameplayTag, Attribute->GetValue());
+		Attribute->OnUpdateAttribute.Broadcast(GameplayTag, Attribute->GetValue());
 	}
 
 	FLogAttributeSystem::VisLogString(GetOwner(),"Modified Attribute: " + GameplayTag.ToString() + " Value: " + FString::SanitizeFloat(Attribute->GetValue()));

@@ -13,7 +13,7 @@ UWorld* UAttributeEffect::GetWorld() const
 	return nullptr;
 }
 
-void UAttributeEffect::InitializeVariables(UAttributeComponent* InAttributeComponent, AController* InController)
+void UAttributeEffect::InitializeVariables(TObjectPtr<UAttributeComponent> InAttributeComponent, TObjectPtr<AController> InController)
 {
 	AttributeComponent = InAttributeComponent;
 	Controller = InController;
@@ -31,15 +31,15 @@ void UAttributeEffect::FinishEffect()
 
 void UAttributeEffect::FinishAllEffects()
 {
-	for (int32 i = 0; i <= StackSize; i++)
+	for (int32 i = 0; i <= StackSize; ++i)
 	{
 		FinishEffect();
 	}
 }
 
-void UAttributeEffect::SetStackSize(int32 Value)
+void UAttributeEffect::SetStackSize(const int32 Value)
 {
-	int32 OldValue = StackSize;
+	const int32 OldValue = StackSize;
 	StackSize = bLimitStackSize ? FMath::Clamp(Value, 0, MaxStackSize) : Value;
 
 	if (AttributeComponent)
@@ -63,12 +63,12 @@ void UAttributeEffect::SetStackSize(int32 Value)
 	
 }
 
-void UAttributeEffect::SetMaxStackSize(int32 Value)
+void UAttributeEffect::SetMaxStackSize(const int32 Value)
 {
 	MaxStackSize = FMath::Min(1, Value);
 }
 
-void UAttributeEffect::AddStackSize(int32 Value)
+void UAttributeEffect::AddStackSize(const int32 Value)
 {
 	SetStackSize(StackSize + Value);
 }

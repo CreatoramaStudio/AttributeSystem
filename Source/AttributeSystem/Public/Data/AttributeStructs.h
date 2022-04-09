@@ -16,24 +16,24 @@ struct ATTRIBUTESYSTEM_API FAttribute
 protected:
 
     UPROPERTY(SaveGame, EditAnywhere)
-        float BaseValue = 0;
+    float BaseValue = 0;
 
 public:
 
     UPROPERTY(SaveGame, EditAnywhere)
-        float Delta = 0;
+    float Delta = 0;
 
     UPROPERTY(SaveGame, EditAnywhere)
-        float Multiplier = 1;
+    float Multiplier = 1;
 
     UPROPERTY(SaveGame, EditAnywhere)
-        EFloatLimitType LimitType = EFloatLimitType::None;
+    EFloatLimitType LimitType = EFloatLimitType::None;
 
     UPROPERTY(SaveGame, EditAnywhere, meta = (EditCondition = "LimitType!=EFloatLimitType::None", EditConditionHides))
-        FFloatInterval LimitValues = FFloatInterval(0, 0);
+    FFloatInterval LimitValues = FFloatInterval(0, 0);
 
     UPROPERTY(SaveGame)
-        FOnUpdateAttributeMulticast OnUpdateAttibute;
+    FOnUpdateAttributeMulticast OnUpdateAttribute;
 
 protected:
 
@@ -41,7 +41,7 @@ private:
 
 public:
 
-    void SetBaseValue(float Value)
+    void SetBaseValue(const float Value)
     {
         switch (LimitType)
         {
@@ -67,7 +67,7 @@ public:
 
     float GetValue() const
     {
-        float Value = (BaseValue + Delta) * Multiplier;
+        const float Value = (BaseValue + Delta) * Multiplier;
 
         switch (LimitType)
         {
@@ -100,5 +100,4 @@ public:
 protected:
 
 private:
-
 };
