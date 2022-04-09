@@ -213,9 +213,9 @@ bool UAttributeComponent::UnbindAllAttributeEvents(const FGameplayTag GameplayTa
 	return false;
 }
 
-TSet<UAttributeEffect*> UAttributeComponent::GetAttributeEffects() const
+TArray<UAttributeEffect*> UAttributeComponent::GetAttributeEffects() const
 {
-	return TSet<UAttributeEffect*>(AttributeEffects.Array());
+	return AttributeEffects.Array();
 }
 
 bool UAttributeComponent::AddAttributeEffectByType(const TSubclassOf<UAttributeEffect> AttributeEffectType)

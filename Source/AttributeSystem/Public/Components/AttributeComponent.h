@@ -104,7 +104,7 @@ public:
 	bool UnbindAllAttributeEvents(const FGameplayTag GameplayTag, const FOnUpdateAttribute& Value);
 
 	UFUNCTION(BlueprintPure, Category = "Attribute Component|Effect")
-	TSet<UAttributeEffect*> GetAttributeEffects() const;
+	TArray<UAttributeEffect*> GetAttributeEffects() const;
 
 	UFUNCTION(BlueprintCallable, Category = "Attribute Component|Effect")
 	bool AddAttributeEffectByType(const TSubclassOf<UAttributeEffect> AttributeEffectType);
